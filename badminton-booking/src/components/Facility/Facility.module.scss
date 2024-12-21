@@ -1,0 +1,131 @@
+
+.facility-container {
+    cursor: pointer;
+
+    .facility-1 {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        padding: 0 20px;
+
+        .facility-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            z-index: 10;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+        
+
+        .infor {
+            display: flex;
+            justify-content: flex-end;
+            flex-direction: column;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            font-size: 16px; 
+            margin-left: -50px;
+            padding: 10px 10px 10px 60px;
+            width: 350px;
+            border-radius: 30px;
+
+            p:first-child {
+                font-weight: bold;
+                font-size: 20px;
+            }
+
+            p:nth-child(2) {
+                font-size: 16px;
+                height: 48px;
+                font-weight: 500;
+            }
+
+            p:nth-child(3) {
+                font-size: 18px;
+                font-weight: 700;
+                font-style: italic;
+                color: red;
+            }
+        }
+    }
+
+
+    .facility-2 {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        margin: 0 -20px;
+
+        .facility-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            z-index: 10;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            margin-left: -50px;
+
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+
+            &:hover {
+                transform: scale(1.1);
+            }
+        }
+        
+
+        .infor {
+            display: flex;
+            justify-content: flex-start;
+            flex-direction: column;
+            width: 350px;
+            border-radius: 30px;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            font-size: 16px; 
+            // margin: 0 -20px;
+            padding: 10px 60px 10px 20px;
+            
+
+            p:first-child {
+                font-weight: bold;
+                font-size: 20px;
+            }
+
+            p:nth-child(2) {
+                font-size: 16px;
+                height: 48px;
+                font-weight: 500;
+            }
+
+            p:nth-child(3) {
+                font-size: 18px;
+                font-weight: 700;
+                font-style: italic;
+                color: red;
+            }
+        }
+    }
+
+}

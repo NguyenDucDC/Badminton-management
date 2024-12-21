@@ -1,0 +1,88 @@
+
+.table-calendar {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead th {
+        background-color: #9fe5ab;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    th, td {
+        border: 1px solid black;
+        text-align: center;
+        padding: 8px;
+    }
+
+    th:first-child, td:first-child {
+        width: 50px;
+    }
+
+    th:not(:first-child), 
+    td:not(:first-child) {
+        width: calc((100% - 50px) / 24);
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover {
+        background-color: #ddd;
+    }
+
+    td {
+        transition: background-color 0.3s ease;
+    }
+
+
+    // css calendar
+    .cell-booked {
+        background-color: rgb(255, 106, 106);
+        color: white;
+        position: relative;
+    }
+
+    .cell-available {
+        // background-color: green;
+        color: white;
+    }
+
+    .cell-booked:hover .tooltip {
+        visibility: visible;
+    }
+
+    .cell-booked:hover {
+        cursor: pointer;
+    }
+    
+    .tooltip {
+        visibility: hidden;
+        background-color: #000;
+        color: #fff;
+        text-align: left;
+        padding: 10px;
+        border-radius: 5px;
+        border: 2px;
+        position: absolute;
+        z-index: 1;
+        bottom: calc(100% + 5px);
+        left: 50%;
+        transform: translateX(-50%);
+        min-width: 240px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 6px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .tooltip::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #000 transparent transparent transparent;
+    }
+    
+}

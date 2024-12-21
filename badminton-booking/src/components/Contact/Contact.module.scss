@@ -1,0 +1,79 @@
+
+.contact {
+    margin-top: 20px;
+
+    p:first-child {
+        font-size: 32px;
+    }
+
+    .button {
+        display: flex;
+        gap: 10px;
+
+        button {
+            width: 120px;
+            height: 40px;
+            color: #fff;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 300;
+            border: none;
+            margin-top: 10px;
+        }
+
+        .btn-contact {
+            background-color: #056920;
+        }
+
+        .btn-book {
+            background-color: #1D62D8;
+        }
+
+        button:hover {
+            cursor: pointer;
+            opacity: 0.8;
+        }
+    }
+}
+
+.sales-list {
+    padding: 20px;
+    max-height: 300px; /* Giới hạn chiều cao của danh sách */
+    overflow-y: auto; /* Cho phép cuộn nếu danh sách quá dài */
+    margin-top: 10px;
+    background-color: #f9f9f9; /* Màu nền nhẹ */
+    border-radius: 8px; /* Bo góc */
+    border: 1px solid #e0e0e0; /* Đường viền mờ */
+}
+
+.sales-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.sales-item:hover {
+    background-color: #f0f0f0; 
+}
+
+.sales-item strong {
+    font-weight: bold;
+    color: #333;
+}
+
+.sales-item span {
+    color: #555;
+    font-size: 14px;
+}
+
+.no-sales {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+    margin-top: 20px;
+}

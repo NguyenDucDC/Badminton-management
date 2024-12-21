@@ -1,0 +1,125 @@
+
+.image-facility {
+    margin-bottom: 20px;
+    
+    h3 {
+        margin-bottom: 20px;
+    }
+
+    .add-image {
+        display: flex;
+
+        input {
+            margin-left: 10px;
+            margin-bottom: 20px;
+        }
+    }
+
+    .image-preview {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+    }
+
+    .image-container {
+        position: relative;
+
+        .preview-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .remove-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: transparent;
+            color: red;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0; 
+            line-height: 1; 
+            font-weight: 300;  
+            transition: color 0.2s;
+        }
+
+        .remove-button:hover {
+            color: darkred;
+            cursor: pointer;
+        }
+    }
+
+
+    .image {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 15px;
+    }
+
+    .list-image {
+        position: relative;
+
+        .image-item {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-delete {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: transparent;
+            color: red;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 0; 
+            line-height: 1; 
+            font-weight: 500;  
+            transition: color 0.2s;
+        }
+
+        .button-delete:hover {
+            color: darkred;
+            cursor: pointer;
+        }
+    }
+    
+
+    .upload-button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: #0056b3;
+        }
+
+        &:active {
+            background-color: #004085;
+        }
+    }
+}
+
+.delete-image {
+
+    img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+}

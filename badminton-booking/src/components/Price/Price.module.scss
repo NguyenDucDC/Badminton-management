@@ -1,0 +1,41 @@
+.table-container {
+    padding-bottom: 20px;
+    // box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+
+    .title {
+        font-size: 36px;
+    }
+}
+
+.table-price {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-size: 20px;
+    background-color: #fff;
+
+    td {
+        font-size: 24px;
+    }
+
+    .row_price {
+        th, td {
+            border: 1px solid #ddd;
+            padding: 15px;
+        }
+        
+        th {
+            background-color: #9fe5ab;
+            color: #000;
+        }
+    }
+    
+    .input_price {
+        width: 150px;
+        text-align: center;
+        outline: none;
+        border: none;
+        font-size: 24px;
+    }
+
+}

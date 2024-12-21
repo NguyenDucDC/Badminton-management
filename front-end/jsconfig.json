@@ -1,0 +1,6 @@
+{
+  "compilerOptions": {
+    "baseUrl": "."
+  },
+  "include": ["src", "../pipgowebsitev1/src/config/Filter.js"]
+}

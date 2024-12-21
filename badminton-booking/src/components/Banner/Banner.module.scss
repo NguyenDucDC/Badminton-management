@@ -1,0 +1,46 @@
+hr {
+    margin: 20px 0;
+}
+
+.banner{
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    background-color: #fff;
+    padding-bottom: 120px;
+    border-bottom: 1px solid #ccc;
+
+    .banner-img {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        
+        img {
+            width: 80%;
+            object-fit: cover;
+        }
+    }
+
+    .slogan {
+        width: 70%;
+        display: flex;
+        justify-content: space-around;
+        position: absolute;
+        bottom: 50px;
+
+        .item {
+            background-color: #fff;
+            color: #083165;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            width: 150px;
+            box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.5);
+
+            h3 {
+                text-align: center;
+            }
+        }
+    }
+}

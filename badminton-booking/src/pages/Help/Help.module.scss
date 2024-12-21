@@ -1,0 +1,37 @@
+
+.help {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto 0;
+    height: fit-content;
+  
+    h4 {
+      color: #333;
+      margin-bottom: 16px;
+      font-size: 20px;
+      text-align: center;
+    }
+  
+    p {
+      color: #555;
+      font-size: 16px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+  
+    strong {
+      color: #000;
+    }
+
+    .note {
+        color: red;
+
+        .note-content {
+            margin-left: 20px;
+        }
+    }
+}
+  

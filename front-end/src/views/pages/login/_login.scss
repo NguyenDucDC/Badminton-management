@@ -1,0 +1,49 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    padding-top: 70px;
+
+    .logo {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        align-items: center;
+
+    }
+
+    .logo-brand {
+        font-size: 3.2rem;
+    }
+
+    .brand-image {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+    }
+
+    .login-title {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .login-form-button {
+        color: #fff;
+        padding: 6px 20px;
+        font-size: 12px !important;
+        background: #1e62d8;
+        box-shadow: none !important;
+        font-weight: 400;
+        border-radius: 4px;
+        text-transform: capitalize;
+        width: 100%;
+    }
+
+    .login-form-forgot {
+        color: #1e62d8;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+}
