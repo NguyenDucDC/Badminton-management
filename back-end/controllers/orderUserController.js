@@ -134,7 +134,6 @@ exports.priceCalculation = async (req, res) => {
     }
 }
 
-
 // create order
 exports.createOrder = async (req, res) => {
     const data = req.body
@@ -195,7 +194,6 @@ exports.getListOrder = async (req, res) => {
         res.status(500).json({ message: `${err}` });
     }
 };
-
 
 // get detail order
 exports.getDetailOrder = async (req, res) => {

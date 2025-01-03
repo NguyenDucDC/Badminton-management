@@ -135,7 +135,6 @@ exports.checkCalendar = async (data) => {
   return court;
 };
 
-
 // check calendar default month
 exports.checkCalendarDefaultMonth = async (data, dates) => {
   const facilityId = data.facility;

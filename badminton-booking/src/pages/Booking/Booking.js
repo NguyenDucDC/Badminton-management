@@ -53,7 +53,10 @@ function Booking() {
         }
     }, []);
 
-
+    const validatePhoneNumber = (phone) => {
+        const phoneRegex = /^(03|05|07|08|09)\d{8}$/;
+        return phoneRegex.test(phone);
+    }
 
     const handleGetUser = async () => {
         try {
@@ -96,6 +99,16 @@ function Booking() {
     };
 
     const onFinish = async (values) => {
+
+        if (!validatePhoneNumber(values.phone)) {
+            notification.error({
+                message: 'Lỗi',
+                description: 'Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại đúng!',
+                placement: 'bottomRight',
+                duration: 2,
+            });
+            return;
+        }
 
         // Tính số giờ chênh lệch giữa checkin và checkout
         const durationInHours = values.checkout.diff(values.checkin, 'hours');

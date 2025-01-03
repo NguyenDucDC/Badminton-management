@@ -36,7 +36,6 @@ function Calendar({ data }) {
                 <Form.Item
                     name="date"
                     label="Chọn ngày"
-                    rules={[{ required: true, message: 'Vui lòng chọn ngày!' }]}
                 >
                     <DatePicker
                         format="DD/MM/YYYY"

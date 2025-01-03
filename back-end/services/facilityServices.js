@@ -407,7 +407,6 @@ exports.getListLockFacility_sale = async (id, page, pageSize) => {
     };
 };
 
-
 // get detail lock facility
 exports.getDetailLockFacility = async (id) => {
 
@@ -461,7 +460,6 @@ exports.lockFacility = async (data) => {
         }))
     );
 };
-
 
 // update lock facility
 exports.updateLockFacility = async (id, data) => {

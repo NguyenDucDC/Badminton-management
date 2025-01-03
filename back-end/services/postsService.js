@@ -50,7 +50,7 @@ exports.getAllPosts = async () => {
     return results
 };
 
-exports.ưgetPostsByUserId = async (userId) => {
+exports.getPostsByUserId = async (userId) => {
     try {
         const posts = await Posts.findAll({
             where: { userId },

@@ -16,7 +16,7 @@
     .home-content {
         display: flex;
         width: 100%;
-        padding: 20px 30px;
+        padding: 20px 30px 0 30px;
         gap: 20px;
 
         .list-facility {
@@ -26,7 +26,11 @@
             border-radius: 10px;
             padding: 20px 0;
             box-shadow: 2px 2px 6px #ccc;
-            height: fit-content;
+            height: calc(100vh - 64px);
+            overflow-y: auto;
+            position: sticky;
+            top: 64px; 
+            width: 980px;
 
             .title {
                 margin: 0 auto 20px;
