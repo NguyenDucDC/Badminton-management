@@ -81,28 +81,78 @@ function AddOrder() {
         }
     }
 
-    const onFinish = async (values) => {
+    const handleCheckOrder = (order) => {
+        const currentTime = new Date()
+        const checkInTime = new Date(order.checkin)
 
         // Tính số giờ chênh lệch giữa checkin và checkout
-        const durationInHours = values.checkout.diff(values.checkin, 'hours');
+        const durationInHours = order.checkout.diff(order.checkin, 'hours');
         if (durationInHours > 10) {
             notification.error({
                 message: 'Lỗi',
                 description: 'Đơn hàng không thể kéo dài quá 10 tiếng. Vui lòng nhập lại!',
                 placement: 'bottomRight',
-                duration: 2,
+                duration: 3,
             });
-            return;
+            return false;
         }
 
-        // kiểm tra checkout sau checkin
-        if (values.checkin.isAfter(values.checkout)) {
+        // kiểm tra checkin, checkout
+        if (order.checkin.isAfter(order.checkout)) {
             notification.error({
                 message: 'Lỗi',
                 description: 'Thời gian kết thúc phải sau thời gian bắt đầu. Vui lòng nhập lại!',
                 placement: 'bottomRight',
-                duration: 2,
+                duration: 3,
             });
+            return false;
+        }
+
+        // kiểm tra checkin
+        if (checkInTime < currentTime) {
+            notification.error({
+                message: 'Lỗi',
+                description: 'Thời gian bắt đầu phải sau thời gian hiện tại. Vui lòng nhập lại!',
+                placement: 'bottomRight',
+                duration: 3,
+            });
+            return false;
+        }
+
+        return true;
+    }
+
+    const handleCreateOrder = async (submitData) => {
+        Modal.confirm({
+            title: 'Xác nhận tạo đơn hàng!',
+            icon: <ExclamationCircleOutlined />,
+            content: `Tổng thanh toán: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(submitData.price)}`,
+            onOk: async () => {
+                const res = await createOrder(submitData)
+                if (res.status === 1) {
+                    notification.success({
+                        message: 'Tạo đơn hàng thành công',
+                        placement: 'bottomRight',
+                        duration: 2,
+                    });
+                    navigate('/list-order');
+                } else {
+                    const uniqueInvalidCourts = [...new Set(res.invalidCourt)];
+                    notification.error({
+                        message: 'Lỗi',
+                        description: `Sân ${uniqueInvalidCourts.join(", ")} mới có lịch đặt!`,
+                        placement: 'bottomRight',
+                        duration: 2,
+                    });
+                }
+            },
+            centered: true,
+        });
+    }
+
+    const onFinish = async (values) => { // kiểm tra đơn hàng
+
+        if (!handleCheckOrder(values)) {
             return;
         }
 
@@ -128,46 +178,13 @@ function AddOrder() {
                 res = await checkCalendar(submitData)
             }
 
-            if (res.status === 1) {
-                if (!res.court.length) {
+            if (res.status === 1) {  // check thanh cong
+                if (!res.court.length) { // khong co san nao trung lich
                     const price = await priceCalculation(submitData) // tinh gia
                     if (price.status === 1) {
                         submitData.price = price.cost;
                     }
-
-                    Modal.confirm({
-                        title: 'Xác nhận tạo đơn hàng!',
-                        icon: <ExclamationCircleOutlined />,
-                        content: `Tổng thanh toán: ${new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(submitData.price)}`,
-                        onOk: async () => {
-                            const res = await createOrder(submitData)
-                            if (res.status === 1) {
-                                notification.success({
-                                    message: 'Tạo đơn hàng thành công',
-                                    placement: 'bottomRight',
-                                    duration: 2,
-                                });
-                                navigate('/list-order');
-                            } else {
-                                const uniqueInvalidCourts = [...new Set(res.invalidCourt)];
-                                notification.error({
-                                    message: 'Lỗi',
-                                    description: `Sân ${uniqueInvalidCourts.join(", ")} mới có lịch đặt!`,
-                                    placement: 'bottomRight',
-                                    duration: 2,
-                                });
-                            }
-                        },
-                        // onCancel() {
-                        //     notification.info({
-                        //         message: 'Hủy tạo tài khoản',
-                        //         placement: 'bottomRight',
-                        //         duration: 2,
-                        //     });
-                        // },
-                        centered: true,
-                    });
-
+                    handleCreateOrder(submitData); // tao don hang
                 } else {
                     const uniqueInvalidCourts = [...new Set(res.court)];
                     notification.error({

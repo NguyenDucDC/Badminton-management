@@ -54,16 +54,34 @@ function DetailOrder() {
     const [defaultMonth, setDefaultMonth] = useState(false)
     const [salesStatus, setSalesStatus] = useState(1)
     const [isOnlineOrder, setIsOnlineOrder] = useState(true)
+    const [isCancelOrder, setIsCanCelOrder] = useState(false)
 
     useEffect(() => {
         getListFacility();
         handleGetDetailOrder()
     }, [id]);
 
+    const handleCancelOrder = (order) => {
+        const currentTime = new Date();
+        const checkIn = new Date(order.checkIn)
+
+        if (order.default) {
+            const month = checkIn.getMonth()
+            const year = checkIn.getFullYear()
+
+            if (currentTime.getFullYear() < year || (currentTime.getFullYear() === year && currentTime.getMonth() < month) ) {
+                setIsCanCelOrder(true)
+            }
+        } else {
+            setIsCanCelOrder(checkIn > currentTime)
+        }
+    }
+
     const handleGetDetailOrder = async () => {
         try {
             const res = await getDetailOrder(id)
             if (res.status === 1) {
+                handleCancelOrder(res.order)
                 handleGetDetailFacility(res.order.facility_id)
                 form.setFieldsValue({
                     name: res.order.cus_name,
@@ -362,14 +380,13 @@ function DetailOrder() {
                                         autoSize={{ minRows: 3 }}
                                     />
                                 </Form.Item>
-                                {user.role === 'sale' && (
+                                {user.role === 'sale' && isCancelOrder && (
                                     <Form.Item {...tailLayout}>
                                         <Button type="primary" danger htmlType="submit">
                                             Huỷ đơn hàng
                                         </Button>
                                     </Form.Item>
                                 )}
-
                             </CCol>
 
                         </Form>
