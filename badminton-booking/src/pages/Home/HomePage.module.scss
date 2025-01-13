@@ -22,6 +22,7 @@
         .list-facility {
             background-color: #fff;
             display: flex;
+            flex: 2;
             flex-direction: column;
             border-radius: 10px;
             padding: 20px 0;
@@ -30,7 +31,6 @@
             overflow-y: auto;
             position: sticky;
             top: 64px; 
-            width: 980px;
 
             .title {
                 margin: 0 auto 20px;
@@ -41,7 +41,7 @@
 
         .home-posts {
             border-radius: 10px;
-            width: 100%;
+            flex: 3;
         }
     }
     
