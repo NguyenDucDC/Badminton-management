@@ -3,7 +3,7 @@ import { useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './Register.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { register } from '../../services/auth';
+import { register, verify } from '../../services/auth';
 import { auth } from '../../config/Firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber, PhoneAuthProvider, signInWithCredential } from 'firebase/auth';
 import { Modal, Input, Button, message, notification } from 'antd';
@@ -20,6 +20,15 @@ function Register() {
     const [otp, setOtp] = useState('');
     const [verificationId, setVerificationId] = useState('');
     const [isVisible, setIsVisible] = useState(false);
+
+    const handleVerify = async () => {
+        try {
+            const res = await verify(phone)
+            console.log(res)
+        } catch(err){
+            console.log(err)
+        }
+    }
 
     // Setup reCAPTCHA
     const setUpRecaptcha = () => {
@@ -41,6 +50,7 @@ function Register() {
                 window.confirmationResult = confirmationResult;
                 setVerificationId(confirmationResult.verificationId);
                 setIsVisible(true);
+                console.log('OTP đã được gửi!')
                 message.success('OTP đã được gửi!');
             }).catch((error) => {
                 console.log("error: ", error)
@@ -177,7 +187,7 @@ function Register() {
                     <div className={cx('input')}>
                         <div className={cx('input-item')}>
                             <input
-                                defaultValue='+84333960103'
+                                defaultValue='0333960103'
                                 placeholder="Số điện thoại"
                                 onChange={(e) => setPhone(e.target.value)}
                             />
@@ -207,7 +217,7 @@ function Register() {
                         </div>
                     </div>
                     <div>
-                        <button className={cx('btn-register')} onClick={sendOTP}>
+                        <button className={cx('btn-register')} onClick={handleVerify}>
                             Đăng ký
                         </button>
                     </div>

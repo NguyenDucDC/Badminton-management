@@ -11,7 +11,13 @@ exports.sendOtp = async (req, res) => {
 };
 
 exports.verifyOtp = async (req, res) => {
-    
+    const { phone } = req.body
+    try {
+        await authUserServices.verifyOtp(phone);
+    } catch  (err){
+        console.log(err);
+        res.status(500).send('Error server!');
+    }
 };
 
 

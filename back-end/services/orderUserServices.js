@@ -163,6 +163,7 @@ exports.getListOrder = async (id) => {
       JOIN facilities ON facilities.id = orders.facility_id
       WHERE orders.cus_phone = :phoneNumber
       GROUP BY orders.id
+      ORDER BY orders.createdAt DESC
     `;
 
     const [results] = await sequelize.query(query, {

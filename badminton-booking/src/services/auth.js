@@ -29,3 +29,17 @@ export const register = async (phone, username, password) => {
         throw err.response.data
     }
 }
+
+export const verify = async (phone) => {
+    const axios = AxiosConfig()
+    let api = `/auth/verify-otp`
+    try {
+        const res = await axios.post(api, {
+            phone: phone
+        })
+        return res.data
+    } catch (err) {
+        console.log(err)
+        throw err.response.data
+    }
+}

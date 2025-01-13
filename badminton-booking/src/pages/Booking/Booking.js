@@ -98,38 +98,131 @@ function Booking() {
         return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
     };
 
-    const onFinish = async (values) => {
+    const validateCustomerName = (name) => {
+        // Kiểm tra nếu tên bị trống
+        if (!name.trim()) {
+            return "Tên không được để trống.";
+        }
 
-        if (!validatePhoneNumber(values.phone)) {
+        // Kiểm tra ký tự không hợp lệ
+        const nameRegex = /^[a-zA-ZÀ-ỹ\s]+$/u; // Hỗ trợ cả tiếng Việt và dấu
+        if (!nameRegex.test(name)) {
+            return "Tên chỉ được chứa chữ cái và khoảng trắng.";
+        }
+
+        // Kiểm tra độ dài
+        if (name.length < 10 || name.length > 50) {
+            return "Tên phải từ 10 đến 50 ký tự.";
+        }
+
+        // Nếu hợp lệ
+        return null;
+    }
+
+    const handleCheckOrder = (order) => {
+        const currentTime = new Date()
+        const checkInTime = new Date(order.checkin)
+
+        if(validateCustomerName(order.username)){
+            notification.error({
+                message: 'Lỗi',
+                description: `${validateCustomerName(order.username)}`,
+                placement: 'bottomRight',
+                duration: 3,
+            });
+            return false;
+        }
+        
+
+        if (!validatePhoneNumber(order.phone)) {
             notification.error({
                 message: 'Lỗi',
                 description: 'Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại đúng!',
                 placement: 'bottomRight',
-                duration: 2,
+                duration: 3,
             });
-            return;
+            return false;
         }
 
         // Tính số giờ chênh lệch giữa checkin và checkout
-        const durationInHours = values.checkout.diff(values.checkin, 'hours');
+        const durationInHours = order.checkout.diff(order.checkin, 'hours');
         if (durationInHours > 10) {
             notification.error({
                 message: 'Lỗi',
                 description: 'Đơn hàng không thể kéo dài quá 10 tiếng. Vui lòng nhập lại!',
                 placement: 'bottomRight',
-                duration: 2,
+                duration: 3,
             });
-            return;
+            return false;
         }
 
         // kiểm tra checkout sau checkin
-        if (values.checkin.isAfter(values.checkout)) {
+        if (order.checkin.isAfter(order.checkout)) {
             notification.error({
                 message: 'Lỗi',
                 description: 'Thời gian kết thúc phải sau thời gian bắt đầu. Vui lòng nhập lại!',
                 placement: 'bottomRight',
-                duration: 2,
+                duration: 3,
             });
+            return false;
+        }
+
+        // kiểm tra checkin đơn tháng
+        if (order.defaultMonth) {
+            console.log('co dinh')
+            const currentMonth = currentTime.getMonth()
+            const currentYear = currentTime.getFullYear()
+            const month = new Date(order.month).getMonth()
+            const year = new Date(order.month).getFullYear()
+
+            if (currentYear > year || (currentYear === year && currentMonth >= month)) {
+                notification.error({
+                    message: 'Lỗi',
+                    description: `Bạn không thể đặt lịch cố định trước tháng ${currentMonth + 2}/${currentYear}. Vui lòng nhập lại!`,
+                    placement: 'bottomRight',
+                    duration: 3,
+                });
+                return false;
+            }
+        } else if (checkInTime < currentTime) {  // kiểm tra checkin đơn lẻ
+            console.log("le")
+            notification.error({
+                message: 'Lỗi',
+                description: 'Thời gian bắt đầu phải sau thời gian hiện tại. Vui lòng nhập lại!',
+                placement: 'bottomRight',
+                duration: 3,
+            });
+            return false;
+        }
+
+        return true;
+    }
+
+    const handleCreateOrder = async (submitData) => {
+        Modal.confirm({
+            title: 'Xác nhận tạo đơn hàng!',
+            icon: <ExclamationCircleOutlined />,
+            content: (
+                <>
+                    Tổng thanh toán: <span style={{ color: 'green', fontWeight: 'bold' }}>{formatAmount(submitData.amount)}</span> <br />
+                    <strong style={{ color: 'red' }}>*Chú ý:</strong> sau khi đặt hàng, bạn không thể huỷ đơn hàng. Click vào "thanh toán" để đặt hàng
+                </>
+            ),
+            okText: 'Thanh toán',
+            onOk: async () => {
+                const paymentUrl = await createPaymentUrl(submitData)
+
+                localStorage.setItem('orderData', JSON.stringify(submitData)); // lưu đơn hàng vào storage
+
+                window.open(paymentUrl.vnpUrl, '_blank');
+            },
+            centered: true,
+        });
+    }
+
+    const onFinish = async (values) => {
+
+        if (!handleCheckOrder(values)) {
             return;
         }
 
@@ -162,27 +255,7 @@ function Booking() {
                         submitData.amount = price.cost;
                         submitData.price = price.cost;
                     }
-
-                    Modal.confirm({
-                        title: 'Xác nhận tạo đơn hàng!',
-                        icon: <ExclamationCircleOutlined />,
-                        content: (
-                            <>
-                                Tổng thanh toán: <span style={{ color: 'green', fontWeight: 'bold' }}>{formatAmount(submitData.amount)}</span> <br />
-                                <strong style={{ color: 'red' }}>*Chú ý:</strong> sau khi đặt hàng, bạn không thể huỷ đơn hàng. Click vào "thanh toán" để đặt hàng
-                            </>
-                        ),
-                        okText: 'Thanh toán',
-                        onOk: async () => {
-                            const paymentUrl = await createPaymentUrl(submitData)
-
-                            localStorage.setItem('orderData', JSON.stringify(submitData)); // lưu đơn hàng vào storage
-
-                            window.open(paymentUrl.vnpUrl, '_blank');
-                        },
-                        centered: true,
-                    });
-
+                    handleCreateOrder(submitData); // create order
                 } else {
                     const uniqueInvalidCourts = [...new Set(res.court)];
                     notification.error({

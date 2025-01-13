@@ -3378,6 +3378,11 @@ tar@^6.1.11:
     mkdirp "^1.0.3"
     yallist "^4.0.0"
 
+textflow.js@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/textflow.js/-/textflow.js-0.1.4.tgz#a85154d474ec7732d2c296cad386c971f0b904e6"
+  integrity sha512-0gVI2Didjpm6Hzbt+7gm9QvTexlXuiXb95BAaFDct57eQoNj1iKZWJr0Pe3P0t5/lB89QjrRVHRNP5ChgMK71A==
+
 to-regex-range@^5.0.1:
   version "5.0.1"
   resolved "https://registry.npmjs.org/to-regex-range/-/to-regex-range-5.0.1.tgz"

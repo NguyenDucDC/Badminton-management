@@ -81,9 +81,40 @@ function AddOrder() {
         }
     }
 
+    const validateCustomerName = (name) => {
+        // Kiểm tra nếu tên bị trống
+        if (!name.trim()) {
+            return "Tên không được để trống.";
+        }
+
+        // Kiểm tra ký tự không hợp lệ
+        const nameRegex = /^[a-zA-ZÀ-ỹ\s]+$/u; // Hỗ trợ cả tiếng Việt và dấu
+        if (!nameRegex.test(name)) {
+            return "Tên chỉ được chứa chữ cái và khoảng trắng.";
+        }
+
+        // Kiểm tra độ dài
+        if (name.length < 10 || name.length > 50) {
+            return "Tên phải từ 10 đến 50 ký tự.";
+        }
+
+        // Nếu hợp lệ
+        return null;
+    }
+
     const handleCheckOrder = (order) => {
         const currentTime = new Date()
         const checkInTime = new Date(order.checkin)
+
+        if(validateCustomerName(order.username)){
+            notification.error({
+                message: 'Lỗi',
+                description: `${validateCustomerName(order.username)}`,
+                placement: 'bottomRight',
+                duration: 3,
+            });
+            return false;
+        }
 
         // Tính số giờ chênh lệch giữa checkin và checkout
         const durationInHours = order.checkout.diff(order.checkin, 'hours');
@@ -108,8 +139,25 @@ function AddOrder() {
             return false;
         }
 
-        // kiểm tra checkin
-        if (checkInTime < currentTime) {
+        // kiểm tra checkin đơn tháng
+        if(order.defaultMonth){
+            console.log('co dinh')
+            const currentMonth = currentTime.getMonth()
+            const currentYear = currentTime.getFullYear()
+            const month = new Date(order.month).getMonth()
+            const year = new Date(order.month).getFullYear()
+
+            if(currentYear > year || (currentYear === year && currentMonth >= month)){
+                notification.error({
+                    message: 'Lỗi',
+                    description: `Bạn không thể đặt lịch cố định trước tháng ${currentMonth + 2}/${currentYear}. Vui lòng nhập lại!`,
+                    placement: 'bottomRight',
+                    duration: 3,
+                });
+                return false;
+            }
+        } else if (checkInTime < currentTime) {  // kiểm tra checkin đơn lẻ
+            console.log("le")
             notification.error({
                 message: 'Lỗi',
                 description: 'Thời gian bắt đầu phải sau thời gian hiện tại. Vui lòng nhập lại!',
@@ -118,6 +166,7 @@ function AddOrder() {
             });
             return false;
         }
+        
 
         return true;
     }

@@ -4,6 +4,24 @@ const { v4: uuidv4 } = require('uuid');
 const User = require('../models/user');
 require('dotenv').config();
 
+const textflow = require("textflow.js");
+const { text } = require('body-parser');
+textflow.useKey("nsgvJJ7QIzdIQx07SeJQu8vIokcWlgZjYEvKlLaS302QQ3aQtB7Z0hr6yCDCD86i");
+
+exports.verifyOtp = async (phone) => {
+    console.log(phone)
+    
+    var result = await textflow.sendVerificationSMS(phone)
+
+    if(result.ok){
+        console.log("oke")
+        return { success: true, message: 'Đăng ký thành công!' };
+    }
+    console.log(result)
+
+    return { success: false, message: 'that bai!' };
+};
+
 exports.register = async (phone, username, password) => {
     const existingUser = await User.findOne({ where: { phone } });
     if (existingUser) {
