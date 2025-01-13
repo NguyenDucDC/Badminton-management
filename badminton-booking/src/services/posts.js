@@ -29,9 +29,9 @@ export const getPostsById = async (id) => {
 }
 
 //get posts by id
-export const getAllPosts = async () => {
+export const getAllPosts = async (page) => {
     const axios = AxiosConfig()
-    let api = `/posts/get-all-posts`
+    let api = `/posts/get-all-posts?page=${page}&limit=5`
     try {
         const res = await axios.get(api)
         return res.data

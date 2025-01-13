@@ -23,11 +23,12 @@ exports.createPosts = async (req, res) => {
     }
 
     try {
-        await postsService.createPosts(userId, content, imageUrls);
+        const newPost = await postsService.createPosts(userId, content, imageUrls);
 
         res.status(200).json({
             message: 'Thêm bài viết thành công!',
-            status: 1
+            status: 1,
+            newPost
         });
     } catch (err) {
         console.log("err: ", err)
@@ -48,9 +49,9 @@ exports.getPostsByUserId = async (req, res) => {
 };
 
 exports.getAllPosts = async (req, res) => {
-
     try {
-        const posts = await postsService.getAllPosts();
+        const { page = 1, limit = 10 } = req.query;
+        const posts = await postsService.getAllPosts(page, limit);
         res.status(200).json({
             message: 'Lấy danh sách bài đăng thành công!',
             status: 1,

@@ -5,7 +5,7 @@ const { Op } = require('sequelize');
 const PostsImage = require('../models/posts-image');
 const sequelize = require('../config/database');
 const s3 = require('../config/s3Client');
-const s3Service = require('../services/s3Service')
+const s3Service = require('../services/s3Service');
 
 exports.createPosts = async (userId, content, imageUrls) => {
     const posts_id = uuidv4()
@@ -25,10 +25,35 @@ exports.createPosts = async (userId, content, imageUrls) => {
             }))
         )
     }
+
+    const query = `
+        SELECT 
+            posts.id, 
+            posts.user_id, 
+            posts.content,
+            posts.createdAt,
+            users.username,
+            users.avatarURL,
+            JSON_ARRAYAGG(postsImages.imageURL) AS imageURLs
+        FROM posts
+        LEFT JOIN postsImages ON postsImages.posts_id = posts.id
+        JOIN users ON users.id = posts.user_id
+        WHERE posts.id = :posts_id
+        GROUP BY posts.id
+    `
+
+    const [newPost] = await sequelize.query(query, {
+        replacements: { posts_id },
+        type: sequelize.QueryTypes.SELECT,
+    });
+
+    return newPost
 };
 
 // get all posts
-exports.getAllPosts = async () => {
+exports.getAllPosts = async (page, limit) => {
+    const offset = (page - 1) * limit;
+
     const query = `
       SELECT 
         posts.id, 
@@ -43,11 +68,11 @@ exports.getAllPosts = async () => {
       JOIN users ON users.id = posts.user_id
       GROUP BY posts.id
       ORDER BY posts.createdAt DESC
+      LIMIT ${limit} OFFSET ${offset}
     `;
 
     const [results] = await sequelize.query(query);
-
-    return results
+    return results;
 };
 
 exports.getPostsByUserId = async (userId) => {

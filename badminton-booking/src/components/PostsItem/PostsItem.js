@@ -35,7 +35,6 @@ function PostsItem({ posts, onDelete, onUpdate }) {
         if (posts.user_id === userId) {
             setIsUser(true);
         }
-        console.log("posts.imageURLs.length: ", posts.imageURLs.length)
     }, [params]);
 
     const handleNavigate = (path) => {

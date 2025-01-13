@@ -5,14 +5,14 @@ import { useParams } from "react-router-dom";
 import { getUser } from '../../services/user';
 import { createPosts, getAllPosts, deletePosts, updatePosts } from "../../services/posts";
 import PostsItem from "../PostsItem/PostsItem";
-import { Modal, Input, Form } from "antd";
+import { Modal, Input, Form, Spin } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import ImageCircle from "../ImageCircle/ImageCircle";
 import image from "../../assets/image.png";
 import { notification } from 'antd';
 import { useAuth } from '../../context/AuthContext';
-
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const cx = classNames.bind(styles);
 
@@ -29,12 +29,14 @@ function ListPosts() {
     const [selectedImages, setSelectedImages] = useState([]);
     const [imagePreview, setImagePreview] = useState([]);
     const [modalDelete, setModalDelete] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
 
     useEffect(() => {
         if (isAuthenticated) {
             fetchProfile();
         }
-        handleGetAllPosts();
     }, [params]);
 
     const fetchProfile = async () => {
@@ -48,12 +50,32 @@ function ListPosts() {
         }
     };
 
+    useEffect(() => {
+        handleGetAllPosts();
+    }, [page]);
+
+    // Tăng trang khi lướt tới cuối
+    const loadMore = () => {
+        setPage((prevPage) => prevPage + 1);
+    };
+
     const handleGetAllPosts = async () => {
+        console.log("get all posts")
         try {
-            const res = await getAllPosts()
-            console.log(res)
+            const res = await getAllPosts(page)
             if (res.status === 1) {
-                setPosts(res.posts)
+                const newPosts = res.posts;
+                // setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+
+                setPosts((prevPosts) => {
+                    const existingIds = new Set(prevPosts.map((post) => post.id));
+                    const filteredPosts = newPosts.filter((post) => !existingIds.has(post.id));
+                    return [...prevPosts, ...filteredPosts];
+                });
+
+                if (newPosts.length === 0) {
+                    setHasMore(false);
+                }
             }
         } catch (err) {
             console.log(err)
@@ -66,11 +88,12 @@ function ListPosts() {
             formData.append('images', image);
         });
         formData.append('content', content);
-
+        setIsLoading(true);
         try {
             const res = await createPosts(formData)
             if (res.status === 1) {
-                handleGetAllPosts()
+                const newPost = res.newPost;
+                setPosts((prevPosts) => [newPost, ...prevPosts]);
                 handleCancelPosts()
                 notification.success({
                     message: `Notification`,
@@ -86,6 +109,8 @@ function ListPosts() {
                 placement: `bottomRight`,
                 duration: 1.5,
             })
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -156,10 +181,11 @@ function ListPosts() {
 
     const handleDeletePost = async (id) => {
         try {
+            setIsLoading(true);
             const res = await deletePosts(id);
             if (res.status === 1) {
                 setModalDelete('');
-                handleGetAllPosts();
+                setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
                 notification.success({
                     message: `Notification`,
                     description: `${res.message}`,
@@ -177,6 +203,8 @@ function ListPosts() {
                 placement: `bottomRight`,
                 duration: 3,
             })
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -291,6 +319,12 @@ function ListPosts() {
                 </div>
             </Modal>
 
+            {isLoading && (
+                <div className={cx('loading')}>
+                    <Spin size="large" tip="Đang xử lý..." />
+                </div>
+            )}
+
             {data.role === 'sale' && (
                 <div className={cx('header-posts')}>
                     <div className={cx('avt')}>
@@ -302,8 +336,13 @@ function ListPosts() {
                 </div>
             )}
 
-
-            <div className={cx('list-posts')}>
+            <InfiniteScroll
+                dataLength={posts.length}
+                next={loadMore}
+                hasMore={hasMore}
+                loader={<h4>Đang tải...</h4>}
+                endMessage={<p>Đã hiển thị toàn bộ bài đăng!</p>}
+            >
                 {posts && posts.map((postsItem, index) => (
                     <div key={index} className={cx('posts-item')}>
                         <PostsItem
@@ -314,7 +353,9 @@ function ListPosts() {
                         />
                     </div>
                 ))}
-            </div>
+            </InfiniteScroll>
+
+
         </div>
     )
 }
