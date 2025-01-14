@@ -35,7 +35,7 @@ function HomePage() {
                         <Facility key={facility.id} data={facility} index={index} />
                     ))}
                 </div>
-                <div className={cx('home-posts')}>
+                <div className={cx('list-posts')}>
                     <ListPosts />
                 </div>
             </div>

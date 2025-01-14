@@ -34,7 +34,7 @@ function Header() {
         if (isAuthenticated) {
             handleGetUser()
         }
-    }, [])
+    }, [isAuthenticated])
 
     const toggleDropdown = () => {
         setShowDropdown(!showDropdown);
