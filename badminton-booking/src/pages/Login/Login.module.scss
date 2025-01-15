@@ -26,20 +26,8 @@
 
 .input-item {
     margin-bottom: 16px;
-
-    input {
-        width: 100%;
-        padding: 14px 16px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-        font-size: 16px;
-
-        &:focus {
-            border-color: #0866ff;
-            box-shadow: 0 0 0 2px #e7f3ff;
-            caret-color: #0866ff;
-        }
-    }
+    padding: 10px 16px;
+    font-size: 16px;
 }
 
 .btn-login {

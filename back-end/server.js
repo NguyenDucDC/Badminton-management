@@ -57,7 +57,7 @@ app.use('/user/payment', PaymentUserRouter);
 app.use('/user/customer', CustomerUserRouter);
 app.use('/user/posts', PostsRouter);
 
-app.listen(port, () => {
+app.listen(port, '127.0.0.1', () => {
     console.log(`Example app listening on port ${port}`)
     connection.connect(function (err) {
         if (err) throw err;

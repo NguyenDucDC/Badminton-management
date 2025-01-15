@@ -30,9 +30,9 @@ export const register = async (phone, username, password) => {
     }
 }
 
-export const verify = async (phone) => {
+export const checkAccount = async (phone) => {
     const axios = AxiosConfig()
-    let api = `/auth/verify-otp`
+    let api = `/auth/check-account`
     try {
         const res = await axios.post(api, {
             phone: phone

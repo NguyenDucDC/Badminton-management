@@ -3,25 +3,6 @@ const authUserServices = require('../services/authUserServices');
 const ACCOUNT_SID = 'AC575df1ee59ece00cb0afac6c25bb89a8'
 const AUTH_TOKEN = 'cde996e08504547434a0c4d4d845cc11'
 
-const twilio = require('twilio');
-const client = new twilio(ACCOUNT_SID, AUTH_TOKEN);
-
-exports.sendOtp = async (req, res) => {
-    
-};
-
-exports.verifyOtp = async (req, res) => {
-    const { phone } = req.body
-    try {
-        await authUserServices.verifyOtp(phone);
-    } catch  (err){
-        console.log(err);
-        res.status(500).send('Error server!');
-    }
-};
-
-
-
 exports.register = async (req, res) => {
     const { phone, username, password } = req.body;
 
@@ -57,6 +38,25 @@ exports.login = async (req, res) => {
                 status: 1,
                 token: result.token,
                 data: result.data
+            });
+        } else {
+            res.status(200).json({ message: result.message, status: 0 });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "server error!", status: 0 });
+    }
+};
+
+exports.checkAccount = async (req, res) => {
+    const { phone } = req.body;
+
+    try {
+        const result = await authUserServices.checkAccount(phone);
+        if (result.success) {
+            res.status(200).json({
+                message: result.message,
+                status: 1,
             });
         } else {
             res.status(200).json({ message: result.message, status: 0 });

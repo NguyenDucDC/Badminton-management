@@ -3,8 +3,9 @@ import classNames from 'classnames/bind';
 import styles from './Login.module.scss';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../services/auth';
-import { notification } from 'antd';
+import { notification, Input } from 'antd';
 import { useAuth } from '../../context/AuthContext';
+
 
 const cx = classNames.bind(styles);
 
@@ -70,24 +71,21 @@ function Login() {
             <h2>Đăng nhập</h2>
             <div className={cx('container')}>
                 <div className={cx('input')}>
-                    <div className={cx('input-item')}>
-                        <input
-                            autoComplete="tel"
-                            placeholder="Số điện thoại"
-                            onChange={(e) => {
-                                setPhone(e.target.value)
-                            }}
-                        />
-                    </div>
-                    <div className={cx('input-item')}>
-                        <input
-                            placeholder="Mật khẩu"
-                            type='password'
-                            onChange={(e) => {
-                                setPassword(e.target.value)
-                            }}
-                        />
-                    </div>
+                    <Input
+                        className={cx('input-item')}
+                        autoComplete="tel"
+                        placeholder="Số điện thoại"
+                        onChange={(e) => {
+                            setPhone(e.target.value)
+                        }}
+                    />
+                    <Input.Password
+                        className={cx('input-item')}
+                        placeholder="Mật khẩu"
+                        onChange={(e) => {
+                            setPassword(e.target.value)
+                        }}
+                    />
                 </div>
                 <div>
                     <button className={cx('btn-login')} onClick={() => handleLogin()}>Đăng nhập</button>
