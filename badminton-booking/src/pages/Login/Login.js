@@ -16,6 +16,16 @@ function Login() {
 
     const { setLogin } = useAuth();
 
+    const normalizePhoneNumber = (phoneNumber) => {
+        let cleanedNumber = phoneNumber.replace(/\s+/g, '');  //loại bỏ khoảng trắng
+        
+        if (cleanedNumber.startsWith('+84')) {  // chuyển +84 thành đầu 0
+            cleanedNumber = '0' + cleanedNumber.slice(3);
+        }
+
+        return cleanedNumber;
+    };
+
     const handleLogin = async () => {
         if (!phone) {
             notification.error({
@@ -36,7 +46,7 @@ function Login() {
         }
 
         try {
-            const res = await login(phone, password)
+            const res = await login(normalizePhoneNumber(phone), password)
             if (res.status === 1) {
                 localStorage.setItem('token', res.token);
                 localStorage.setItem('userId', res.data.user.id);
@@ -93,6 +103,9 @@ function Login() {
                 <div className={cx('register')}>
                     Chưa có tài khoản?
                     <a href='/register' >Đăng ký ngay</a>
+                </div>
+                <div className={cx('forgot-password')}>
+                    <a href='/forgot-password' >Quên mật khẩu?</a>
                 </div>
             </div>
         </div>

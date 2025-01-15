@@ -59,12 +59,38 @@ exports.checkAccount = async (req, res) => {
                 status: 1,
             });
         } else {
-            res.status(200).json({ message: result.message, status: 0 });
+            res.status(200).json({
+                message: result.message,
+                status: 0
+            });
         }
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "server error!", status: 0 });
     }
 };
+
+exports.changePassword = async (req, res) => {
+    const { phone, password } = req.body;
+
+    try {
+        const result = await authUserServices.changePassword(phone, password);
+        if (result.success) {
+            res.status(200).json({
+                message: result.message,
+                status: 1,
+            });
+        } else {
+            res.status(200).json({
+                message: result.message,
+                status: 0
+            });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "server error!", status: 0 });
+    }
+};
+
 
 

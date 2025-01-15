@@ -43,3 +43,18 @@ export const checkAccount = async (phone) => {
         throw err.response.data
     }
 }
+
+export const changePassword = async (phone, password) => {
+    const axios = AxiosConfig()
+    let api = `/auth/change-password`
+    try {
+        const res = await axios.post(api, {
+            phone: phone,
+            password: password
+        })
+        return res.data
+    } catch (err) {
+        console.log(err)
+        throw err.response.data
+    }
+}

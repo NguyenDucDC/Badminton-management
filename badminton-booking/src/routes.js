@@ -3,6 +3,7 @@ import DefaultLayout from './layout/DefaultLayout/DefaultLayout'
 
 const Login = React.lazy(() => import('./pages/Login/Login'));
 const Register = React.lazy(() => import('./pages/Register/Register'));
+const ForgotPassword = React.lazy(() => import('./pages/ForgotPassword/ForgotPassword'));
 
 const HomePage = React.lazy(() => import('./pages/Home/HomePage'));
 const Booking = React.lazy(() => import('./pages/Booking/Booking'));
@@ -24,6 +25,13 @@ const routes = [
         path: '/register',
         name: 'Register',
         element: Register,
+        exact: true,
+        layout: DefaultLayout
+    },
+    {
+        path: '/forgot-password',
+        name: 'ForgotPassword',
+        element: ForgotPassword,
         exact: true,
         layout: DefaultLayout
     },

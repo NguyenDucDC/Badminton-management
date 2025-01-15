@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const User = require('../models/user');
+const { where } = require('sequelize');
 require('dotenv').config();
 
 exports.register = async (phone, username, password) => {
@@ -53,13 +54,33 @@ exports.checkAccount = async (phone) => {
 
     if (user) {
         return {
-            success: false,
+            success: true,
             message: 'Tài khoản đã tồn tại!',
         };
     }
 
     return {
+        success: false,
+        message: 'Tài khoản không tồn tại!',
+    };
+};
+
+exports.changePassword = async (phone, password) => {
+    const user = await User.findOne({ where: { phone } });
+    if (!user) {
+        return { success: false, message: 'Số điện thoại không đúng!' };
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await User.update({
+        password: hashedPassword
+    }, {
+        where: { phone }
+    });
+
+    return {
         success: true,
-        message: 'Tài khoản chưa tồn tại!',
+        message: 'Đổi mật khẩu thành công!',
     };
 };

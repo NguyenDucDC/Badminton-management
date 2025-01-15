@@ -1,61 +1,54 @@
 import { useState, useEffect } from 'react';
 import classNames from 'classnames/bind';
-import styles from './Register.module.scss';
+import styles from './ForgotPassword.module.scss';
 import { useNavigate } from 'react-router-dom';
-import { register, checkAccount } from '../../services/auth';
+import { changePassword, checkAccount } from '../../services/auth';
 import { auth } from '../../config/Firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber, PhoneAuthProvider, signInWithCredential } from 'firebase/auth';
 import { Modal, Input, Button, message, notification } from 'antd';
 
-
 const cx = classNames.bind(styles);
 
-function Register() {
+function ForgotPassword() {
     const navigate = useNavigate();
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState();
     const [confirmPassword, setConfirmPassword] = useState();
-    const [username, setUsername] = useState();
     const [otp, setOtp] = useState('');
     const [verificationId, setVerificationId] = useState('');
     const [isVisible, setIsVisible] = useState(false);
+    const [isChangePassword, setIsChangePassword] = useState(false);
 
     useEffect(() => {
         if (!window.recaptchaVerifier) {
             setUpRecaptcha();
         }
     }, []);
-    
+
     const normalizePhoneNumber = (phoneNumber) => {
-        let cleanedNumber = phoneNumber.replace(/\s+/g, '');
-    
-        if (cleanedNumber.startsWith('+84')) {
+        let cleanedNumber = phoneNumber.replace(/\s+/g, '');  //loại bỏ khoảng trắng
+        
+        if (cleanedNumber.startsWith('+84')) {  // chuyển +84 thành đầu 0
             cleanedNumber = '0' + cleanedNumber.slice(3);
         }
-    
-        return cleanedNumber;
-    };
 
-    const formatPhoneNumber = (phoneNumber) => {
-        if (phoneNumber.startsWith('0')) {
-            return '+84' + phoneNumber.slice(1);
-        }
-        return phoneNumber;
+        return cleanedNumber;
     };
 
     const handleCheckAccount = async () => {
         try {
-            const res = await checkAccount(phone)
+            const res = await checkAccount(normalizePhoneNumber(phone))
             if (res.status === 1) {
+                return true;
+            } else {
                 notification.error({
                     message: `Notification`,
                     description: `${res.message}`,
                     placement: `bottomRight`,
                     duration: 3,
                 })
-                return true;
+                return false;
             }
-            return false;
         } catch (err) {
             console.log(err)
         }
@@ -81,7 +74,7 @@ function Register() {
         }
 
         const accountExists = await handleCheckAccount();
-        if (accountExists) {
+        if (!accountExists) {
             return;
         }
         setUpRecaptcha();
@@ -104,6 +97,13 @@ function Register() {
             });
     };
 
+    const formatPhoneNumber = (phoneNumber) => {
+        if (phoneNumber.startsWith('0')) {
+            return '+84' + phoneNumber.slice(1);
+        }
+        return phoneNumber;
+    };
+
     const handleOtpSubmit = async () => {
         if (otp.length !== 6) {
             message.error('OTP không hợp lệ. Vui lòng nhập lại.');
@@ -113,8 +113,8 @@ function Register() {
             const credential = PhoneAuthProvider.credential(verificationId, otp);
             await signInWithCredential(auth, credential);
             message.success('Xác thực OTP thành công!');
-            handleRegister(); // Tiến hành đăng ký sau khi xác thực thành công
-            handleCancel();
+            handleCancelOTP();
+            setIsChangePassword(true);
         } catch (error) {
             console.error("Error verifying OTP", error);
             message.error('Xác minh OTP thất bại!');
@@ -122,22 +122,10 @@ function Register() {
     };
 
     const handleValidate = () => {
-        if (!phone || !username || !password || !confirmPassword) {
+        if (!phone) {
             notification.error({
                 message: `Error`,
                 description: `Vui lòng nhập đầy đủ thông tin!`,
-                placement: `bottomRight`,
-                duration: 3,
-            })
-            console.log("false")
-
-            return false;
-        }
-
-        if (password !== confirmPassword) {
-            notification.error({
-                message: `Error`,
-                description: `Mật khẩu không trùng khớp, vui lòng nhập lại mật khẩu!`,
                 placement: `bottomRight`,
                 duration: 3,
             })
@@ -146,9 +134,19 @@ function Register() {
         return true;
     }
 
-    const handleRegister = async () => {
+    const handleChangePassword = async () => {
+        if(password !== confirmPassword){
+            notification.error({
+                message: `Notification`,
+                description: `Mật khẩu không khớp.`,
+                placement: `bottomRight`,
+                duration: 3,
+            })
+            return;
+        }
+
         try {
-            const res = await register(normalizePhoneNumber(phone), username, password)
+            const res = await changePassword(normalizePhoneNumber(phone), password)
             if (res.status === 1) {
                 navigate('/login')
                 notification.success({
@@ -165,19 +163,26 @@ function Register() {
                     duration: 3,
                 })
             }
+            handleCancelChangePassword()
         } catch {
             notification.error({
                 message: `Notification`,
-                description: `Đăng ký không thành công!`,
+                description: `Đổi mật khẩu không thành công!`,
                 placement: `bottomRight`,
                 duration: 1.5,
             })
         }
     }
 
-    const handleCancel = () => {
+    const handleCancelOTP = () => {
         setOtp('')
         setIsVisible(false);
+    };
+
+    const handleCancelChangePassword = () => {
+        setPassword('');
+        setConfirmPassword('');
+        setIsChangePassword(false);
     };
 
     return (
@@ -185,9 +190,9 @@ function Register() {
             <Modal
                 title="Nhập mã OTP"
                 open={isVisible}
-                onCancel={handleCancel}
+                onCancel={handleCancelOTP}
                 footer={[
-                    <Button key="back" onClick={handleCancel}>
+                    <Button key="back" onClick={handleCancelOTP}>
                         Hủy
                     </Button>,
                     <Button key="submit" type="primary" onClick={handleOtpSubmit}>
@@ -204,8 +209,36 @@ function Register() {
                 />
             </Modal>
 
+            <Modal
+                title="Đổi mật khẩu"
+                open={isChangePassword}
+                onCancel={handleCancelChangePassword}
+                footer={[
+                    <Button key="back" onClick={handleCancelChangePassword}>
+                        Hủy
+                    </Button>,
+                    <Button key="submit" type="primary" onClick={handleChangePassword}>
+                        Xác nhận
+                    </Button>,
+                ]}
+            >
+                <Input.Password
+                    className={cx('input-item')}
+                    placeholder="Mật khẩu"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                />
+
+                <Input.Password
+                    className={cx('input-item')}
+                    placeholder="Nhập lại mật khẩu"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+            </Modal>
+
             <div className={cx('wrapper')}>
-                <h2>Đăng ký</h2>
+                <h2>Quên mật khẩu</h2>
                 <div id="sign-in-button"></div>
                 <div className={cx('container')}>
                     <div className={cx('input')}>
@@ -214,32 +247,14 @@ function Register() {
                             placeholder="Số điện thoại"
                             onChange={(e) => setPhone(e.target.value)}
                         />
-
-                        <Input
-                            className={cx('input-item')}
-                            placeholder="Tên người dùng"
-                            onChange={(e) => setUsername(e.target.value)}
-                        />
-
-                        <Input.Password
-                            className={cx('input-item')}
-                            placeholder="Mật khẩu"
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-
-                        <Input.Password
-                            className={cx('input-item')}
-                            placeholder="Nhập lại mật khẩu"
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                        />
                     </div>
                     <div>
                         <button className={cx('btn-register')} onClick={sendOTP}>
-                            Đăng ký
+                            Gửi OTP
                         </button>
                     </div>
                     <div className={cx('login')}>
-                        Đã có tài khoản?
+                        Quay lại trang
                         <a href='/login'>Đăng nhập</a>
                     </div>
                 </div>
@@ -248,4 +263,4 @@ function Register() {
     );
 }
 
-export default Register;
+export default ForgotPassword;
