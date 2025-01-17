@@ -25,14 +25,14 @@ function Register() {
             setUpRecaptcha();
         }
     }, []);
-    
+
     const normalizePhoneNumber = (phoneNumber) => {
         let cleanedNumber = phoneNumber.replace(/\s+/g, '');
-    
+
         if (cleanedNumber.startsWith('+84')) {
             cleanedNumber = '0' + cleanedNumber.slice(3);
         }
-    
+
         return cleanedNumber;
     };
 
@@ -61,11 +61,17 @@ function Register() {
         }
     }
 
-
     const setUpRecaptcha = () => {
         if (window.recaptchaVerifier) {
             return;
         }
+        let recaptchaElement = document.getElementById('sign-in-button');
+        if (!recaptchaElement) {
+            recaptchaElement = document.createElement('div');
+            recaptchaElement.id = 'sign-in-button';
+            document.body.appendChild(recaptchaElement);
+        }
+
         window.recaptchaVerifier = new RecaptchaVerifier(auth, 'sign-in-button', {
             'size': 'invisible',
             'callback': (response) => {

@@ -1,0 +1,17 @@
+{
+  "name": "badminton_management",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/NguyenDucDC/Badminton-management.git",
+  "author": "nvduc <nvduc>",
+  "license": "MIT",
+  "scripts": {
+    "start": "concurrently \"yarn start:front-end\" \"yarn start:back-end\" \"yarn start:badminton-booking\"",
+    "start:front-end": "yarn --cwd front-end start",
+    "start:back-end": "yarn --cwd back-end start",
+    "start:badminton-booking": "yarn --cwd badminton-booking start"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
