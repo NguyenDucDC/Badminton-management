@@ -26,7 +26,7 @@ const PaymentReturn = () => {
                     message: 'Thông báo',
                     description: `Thêm đơn hàng thành công`,
                     placement: 'bottomRight',
-                    duration: 3,
+                    duration: 13,
                 });
             } else {
                 const refund = await vnpay_refund(paymentData)

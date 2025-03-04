@@ -167,7 +167,6 @@ function AddOrder() {
             return false;
         }
         
-
         return true;
     }
 

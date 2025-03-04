@@ -168,7 +168,7 @@ function DetailStatistics() {
                                     style={{ width: 120, zIndex: '1' }}
                                     getPopupContainer={trigger => trigger.parentElement}
                                 >
-                                    {Array.from(new Array(5), (_, index) => (
+                                    {Array.from(new Array(6), (_, index) => (
                                         <Option key={index + 2020} value={index + 2020}>
                                             {index + 2020}
                                         </Option>
@@ -282,7 +282,7 @@ function DetailStatistics() {
                                     style={{ width: 120, zIndex: '1' }}
                                     getPopupContainer={trigger => trigger.parentElement}
                                 >
-                                    {Array.from(new Array(5), (_, index) => (
+                                    {Array.from(new Array(6), (_, index) => (
                                         <Option key={index + 2020} value={index + 2020}>
                                             {index + 2020}
                                         </Option>
@@ -371,7 +371,7 @@ function DetailStatistics() {
                                     style={{ width: 120, zIndex: '1' }}
                                     getPopupContainer={trigger => trigger.parentElement}
                                 >
-                                    {Array.from(new Array(5), (_, index) => (
+                                    {Array.from(new Array(6), (_, index) => (
                                         <Option key={index + 2020} value={index + 2020}>
                                             {index + 2020}
                                         </Option>

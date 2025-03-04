@@ -294,8 +294,8 @@ exports.getFilterOrder = async (req, res) => {
 
 // cancel order
 exports.cancelOrder = async (req, res) => {
-    if (req.user.role !== "sale") {
-        return res.status(500).json({ message: 'you are not sale' });
+    if (req.user.role !== "sale" && req.user.role !== 'manager') {
+        return res.status(500).json({ message: 'you are not sale or manager' });
     }
 
     const order_id = req.params.id

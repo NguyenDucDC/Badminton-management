@@ -234,7 +234,7 @@ function ListIncomeExpenditure() {
                             getPopupContainer={trigger => trigger.parentElement}
                         >
                             <Option key="none" value={''}>None</Option>
-                            {Array.from(new Array(5), (_, index) => (
+                            {Array.from(new Array(6), (_, index) => (
                                 <Option key={index + 2020} value={index + 2020}>
                                     {index + 2020}
                                 </Option>

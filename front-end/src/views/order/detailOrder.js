@@ -61,6 +61,10 @@ function DetailOrder() {
         handleGetDetailOrder()
     }, [id]);
 
+    const handleCheckCancelOrder = (currentTime, month, year) => {
+
+    }
+
     const handleCancelOrder = (order) => {
         const currentTime = new Date();
         const checkIn = new Date(order.checkIn)
@@ -68,12 +72,18 @@ function DetailOrder() {
         if (order.default) {
             const month = checkIn.getMonth()
             const year = checkIn.getFullYear()
-
-            if (currentTime.getFullYear() < year || (currentTime.getFullYear() === year && currentTime.getMonth() < month) ) {
-                setIsCanCelOrder(true)
+            if (currentTime.getFullYear() < year || (currentTime.getFullYear() === year && currentTime.getMonth() < month)) {
+                if (user.role === 'sale' || (user.role === 'manager' && isOnlineOrder)) {
+                    setIsCanCelOrder(true)
+                }
             }
+
         } else {
-            setIsCanCelOrder(checkIn > currentTime)
+            if (checkIn > currentTime) {
+                if (user.role === 'sale' || (user.role === 'manager' && isOnlineOrder)) {
+                    setIsCanCelOrder(true)
+                }
+            }
         }
     }
 
@@ -380,7 +390,7 @@ function DetailOrder() {
                                         autoSize={{ minRows: 3 }}
                                     />
                                 </Form.Item>
-                                {user.role === 'sale' && isCancelOrder && (
+                                {isCancelOrder && (
                                     <Form.Item {...tailLayout}>
                                         <Button type="primary" danger htmlType="submit">
                                             Huỷ đơn hàng
